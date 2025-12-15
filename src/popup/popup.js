@@ -10,17 +10,18 @@ function initApp() {
             whitelist: document.getElementById('btn-whitelist'),
             blacklist: document.getElementById('btn-blacklist'),
             activity: document.getElementById('btn-activity'),
+            about: document.getElementById('btn-about'), // YENİ
 
             contentSettings: document.getElementById('content-settings'),
             contentWhitelist: document.getElementById('content-whitelist'),
             contentBlacklist: document.getElementById('content-blacklist'),
-            contentActivity: document.getElementById('content-activity')
+            contentActivity: document.getElementById('content-activity'),
+            contentAbout: document.getElementById('content-about') // YENİ
         },
         settings: {
-            // YENİ AYARLAR
             checkLikeWhitelist: document.getElementById('checkLikeWhitelist'),
             checkDislikeBlacklist: document.getElementById('checkDislikeBlacklist'),
-            selectUnlisted: document.getElementById('selectUnlisted'), // Dropdown
+            selectUnlisted: document.getElementById('selectUnlisted'),
 
             radioInstant: document.getElementById('radioInstant'),
             radioPercent: document.getElementById('radioPercent'),
@@ -64,7 +65,8 @@ function setupEventListeners() {
         });
     }
 
-    const tabs = ['settings', 'whitelist', 'blacklist', 'activity'];
+    // YENİ SEKME 'about' EKLENDİ
+    const tabs = ['settings', 'whitelist', 'blacklist', 'activity', 'about'];
     tabs.forEach(t => {
         if (UI.tabs[t]) UI.tabs[t].addEventListener('click', () => switchTab(t));
     });
@@ -72,7 +74,7 @@ function setupEventListeners() {
     const settingInputs = [
         UI.settings.checkLikeWhitelist,
         UI.settings.checkDislikeBlacklist,
-        UI.settings.selectUnlisted, // Select change event
+        UI.settings.selectUnlisted,
         UI.settings.radioInstant, UI.settings.radioPercent,
         UI.settings.radioTime, UI.settings.checkHumanize,
         UI.settings.checkDebug
@@ -104,24 +106,13 @@ function switchTab(tabName) {
 }
 
 function loadAllData() {
-    // YENİ ANAHTARLAR EKLENDİ
     const keys = [
         'enableExtension',
         'whitelist', 'blacklist',
-
-        // Eski Anahtarlar (Migration için)
-        'enableLike', 'enableDislike',
-
-        // Yeni Anahtarlar
-        'actionWhitelist',   // boolean (eski enableLike)
-        'actionBlacklist',   // boolean (varsayılan true)
-        'actionUnlisted',    // string: 'none', 'like', 'dislike'
-
-        'triggerType',
-        'triggerSeconds',
-        'triggerPercent',
-        'enableHumanize',
-        'enableDebug',
+        'enableLike', 'enableDislike', // Legacy keys
+        'actionWhitelist', 'actionBlacklist', 'actionUnlisted',
+        'triggerType', 'triggerSeconds', 'triggerPercent',
+        'enableHumanize', 'enableDebug',
         'activityLogs'
     ];
 
@@ -132,17 +123,13 @@ function loadAllData() {
         UI.masterSwitch.checked = isEnabled;
         updateMasterUI(isEnabled);
 
-        // --- MIGRATION & DEFAULT LOGIC ---
-        // 1. Whitelist: Eğer yeni ayar varsa onu kullan, yoksa eskisine bak, o da yoksa true.
         let valWhitelist = true;
         if (res.actionWhitelist !== undefined) valWhitelist = res.actionWhitelist;
         else if (res.enableLike !== undefined) valWhitelist = res.enableLike;
 
-        // 2. Blacklist: Yeni ayar varsa kullan, yoksa varsayılan true.
         let valBlacklist = true;
         if (res.actionBlacklist !== undefined) valBlacklist = res.actionBlacklist;
 
-        // 3. Unlisted: Yeni ayar varsa kullan. Yoksa eski 'enableDislike' true ise 'dislike', değilse 'none'.
         let valUnlisted = 'none';
         if (res.actionUnlisted !== undefined) {
             valUnlisted = res.actionUnlisted;
@@ -150,12 +137,10 @@ function loadAllData() {
             valUnlisted = 'dislike';
         }
 
-        // UI Set
         if (UI.settings.checkLikeWhitelist) UI.settings.checkLikeWhitelist.checked = valWhitelist;
         if (UI.settings.checkDislikeBlacklist) UI.settings.checkDislikeBlacklist.checked = valBlacklist;
         if (UI.settings.selectUnlisted) UI.settings.selectUnlisted.value = valUnlisted;
 
-        // Diğer Ayarlar
         if (UI.settings.checkHumanize) UI.settings.checkHumanize.checked = res.enableHumanize ?? false;
         if (UI.settings.checkDebug) UI.settings.checkDebug.checked = res.enableDebug ?? false;
 
@@ -190,7 +175,6 @@ function saveSettings() {
     if (UI.settings.radioTime?.checked) triggerType = 'time';
 
     const settings = {
-        // YENİ KAYIT YAPISI
         actionWhitelist: UI.settings.checkLikeWhitelist ? UI.settings.checkLikeWhitelist.checked : true,
         actionBlacklist: UI.settings.checkDislikeBlacklist ? UI.settings.checkDislikeBlacklist.checked : true,
         actionUnlisted: UI.settings.selectUnlisted ? UI.settings.selectUnlisted.value : 'none',
