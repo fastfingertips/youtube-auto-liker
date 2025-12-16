@@ -10,13 +10,13 @@ function initApp() {
             whitelist: document.getElementById('btn-whitelist'),
             blacklist: document.getElementById('btn-blacklist'),
             activity: document.getElementById('btn-activity'),
-            about: document.getElementById('btn-about'), // YENİ
+            about: document.getElementById('btn-about'),
 
             contentSettings: document.getElementById('content-settings'),
             contentWhitelist: document.getElementById('content-whitelist'),
             contentBlacklist: document.getElementById('content-blacklist'),
             contentActivity: document.getElementById('content-activity'),
-            contentAbout: document.getElementById('content-about') // YENİ
+            contentAbout: document.getElementById('content-about')
         },
         settings: {
             checkLikeWhitelist: document.getElementById('checkLikeWhitelist'),
@@ -29,6 +29,7 @@ function initApp() {
             inputPercent: document.getElementById('triggerPercent'),
             inputSeconds: document.getElementById('triggerSeconds'),
             checkHumanize: document.getElementById('checkHumanize'),
+            checkShowNeutral: document.getElementById('checkShowNeutral'),
             checkDebug: document.getElementById('checkDebug')
         },
         lists: {
@@ -65,7 +66,6 @@ function setupEventListeners() {
         });
     }
 
-    // YENİ SEKME 'about' EKLENDİ
     const tabs = ['settings', 'whitelist', 'blacklist', 'activity', 'about'];
     tabs.forEach(t => {
         if (UI.tabs[t]) UI.tabs[t].addEventListener('click', () => switchTab(t));
@@ -77,6 +77,7 @@ function setupEventListeners() {
         UI.settings.selectUnlisted,
         UI.settings.radioInstant, UI.settings.radioPercent,
         UI.settings.radioTime, UI.settings.checkHumanize,
+        UI.settings.checkShowNeutral,
         UI.settings.checkDebug
     ];
     settingInputs.forEach(el => {
@@ -112,7 +113,7 @@ function loadAllData() {
         'enableLike', 'enableDislike', // Legacy keys
         'actionWhitelist', 'actionBlacklist', 'actionUnlisted',
         'triggerType', 'triggerSeconds', 'triggerPercent',
-        'enableHumanize', 'enableDebug',
+        'enableHumanize', 'showNeutralBadge', 'enableDebug',
         'activityLogs'
     ];
 
@@ -142,6 +143,7 @@ function loadAllData() {
         if (UI.settings.selectUnlisted) UI.settings.selectUnlisted.value = valUnlisted;
 
         if (UI.settings.checkHumanize) UI.settings.checkHumanize.checked = res.enableHumanize ?? false;
+        if (UI.settings.checkShowNeutral) UI.settings.checkShowNeutral.checked = res.showNeutralBadge ?? false;
         if (UI.settings.checkDebug) UI.settings.checkDebug.checked = res.enableDebug ?? false;
 
         const type = res.triggerType || 'instant';
@@ -180,6 +182,7 @@ function saveSettings() {
         actionUnlisted: UI.settings.selectUnlisted ? UI.settings.selectUnlisted.value : 'none',
 
         enableHumanize: UI.settings.checkHumanize ? UI.settings.checkHumanize.checked : false,
+        showNeutralBadge: UI.settings.checkShowNeutral ? UI.settings.checkShowNeutral.checked : false,
         enableDebug: UI.settings.checkDebug ? UI.settings.checkDebug.checked : false,
         triggerType: triggerType,
         triggerSeconds: UI.settings.inputSeconds ? (parseInt(UI.settings.inputSeconds.value) || 10) : 10,

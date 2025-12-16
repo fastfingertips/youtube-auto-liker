@@ -76,12 +76,14 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
         const relevantKeys = [
             'triggerType', 'triggerSeconds', 'triggerPercent',
             'whitelist', 'blacklist', 'enableExtension',
-            'actionWhitelist', 'actionBlacklist', 'actionUnlisted'
+            'actionWhitelist', 'actionBlacklist', 'actionUnlisted',
+            'showNeutralBadge'
         ];
         if (relevantKeys.some(key => changes[key])) {
             debugLog("[SETTINGS] Config changed. Resetting state for current video.");
             state.processedVideoId = null;
             state.delayCalculated = false;
+            updateIconState(); // Update icon immediately on settings change
         }
     }
 });
@@ -179,76 +181,63 @@ function checkVideoStatus() {
     });
 }
 
+// --- DECISION LOGIC HELPER ---
+function resolveActionForChannel(channelName, settings) {
+    const whitelist = settings.whitelist || [];
+    const blacklist = settings.blacklist || [];
+
+    // Varsayılan Değerler ve Geriye Dönük Uyumluluk
+    const doLikeWhitelist = settings.actionWhitelist !== undefined ? settings.actionWhitelist : (settings.enableLike ?? true);
+    const doDislikeBlacklist = settings.actionBlacklist !== undefined ? settings.actionBlacklist : true;
+
+    let doUnlisted = 'none';
+    if (settings.actionUnlisted !== undefined) {
+        doUnlisted = settings.actionUnlisted;
+    } else if (settings.enableDislike === true) {
+        doUnlisted = 'dislike';
+    }
+
+    const isWhitelisted = checkIsListed(whitelist, channelName);
+    const isBlacklisted = checkIsListed(blacklist, channelName);
+
+    // 1. Durum: Kanal WHITELIST'te mi?
+    if (isWhitelisted) {
+        if (doLikeWhitelist) return { action: 'like', reason: "Channel is Whitelisted & Action is ON" };
+        else return { action: 'none', reason: "Channel is Whitelisted but Action is OFF" };
+    }
+    // 2. Durum: Kanal BLACKLIST'te mi?
+    else if (isBlacklisted) {
+        if (doDislikeBlacklist) return { action: 'dislike', reason: "Channel is Blacklisted & Action is ON" };
+        else return { action: 'none', reason: "Channel is Blacklisted but Action is OFF" };
+    }
+    // 3. Durum: Kanal LİSTESİZ (Unlisted) mi?
+    else {
+        if (doUnlisted === 'like') return { action: 'like', reason: "Unlisted Channel -> Action: LIKE ALL" };
+        else if (doUnlisted === 'dislike') return { action: 'dislike', reason: "Unlisted Channel -> Action: DISLIKE ALL" };
+        else return { action: 'none', reason: "Unlisted Channel -> Action: NONE" };
+    }
+}
+
 // --- ACTIONS ---
 function processVideo(videoId) {
     const data = getVideoData();
 
     if (!data || !data.channelName) return;
 
-    // YENİ AYARLARIN OKUNMASI
     const keys = [
         'whitelist', 'blacklist',
-        'actionWhitelist',   // boolean (Should we like whitelist?)
-        'actionBlacklist',   // boolean (Should we dislike blacklist?)
-        'actionUnlisted',    // string ('none', 'like', 'dislike')
-        'enableLike', 'enableDislike' // Fallbacks
+        'actionWhitelist',
+        'actionBlacklist',
+        'actionUnlisted',
+        'enableLike', 'enableDislike'
     ];
 
-    chrome.storage.sync.get(keys, (res) => {
-        const whitelist = res.whitelist || [];
-        const blacklist = res.blacklist || [];
+    chrome.storage.sync.get(keys, (settings) => {
+        const result = resolveActionForChannel(data.channelName, settings);
+        const action = result.action;
+        const reason = result.reason;
 
-        // Varsayılan Değerler ve Geriye Dönük Uyumluluk
-        const doLikeWhitelist = res.actionWhitelist !== undefined ? res.actionWhitelist : (res.enableLike ?? true);
-        const doDislikeBlacklist = res.actionBlacklist !== undefined ? res.actionBlacklist : true;
-
-        let doUnlisted = 'none';
-        if (res.actionUnlisted !== undefined) {
-            doUnlisted = res.actionUnlisted;
-        } else if (res.enableDislike === true) {
-            doUnlisted = 'dislike';
-        }
-
-        const isWhitelisted = checkIsListed(whitelist, data.channelName);
-        const isBlacklisted = checkIsListed(blacklist, data.channelName);
-
-        let action = null;
-        let reason = "";
-
-        // --- YENİ KARAR AĞACI (DECISION TREE) ---
-
-        // 1. Durum: Kanal WHITELIST'te mi?
-        if (isWhitelisted) {
-            if (doLikeWhitelist) {
-                action = 'like';
-                reason = "Channel is Whitelisted & Action is ON";
-            } else {
-                reason = "Channel is Whitelisted but Action is OFF";
-            }
-        }
-        // 2. Durum: Kanal BLACKLIST'te mi?
-        else if (isBlacklisted) {
-            if (doDislikeBlacklist) {
-                action = 'dislike';
-                reason = "Channel is Blacklisted & Action is ON";
-            } else {
-                reason = "Channel is Blacklisted but Action is OFF";
-            }
-        }
-        // 3. Durum: Kanal LİSTESİZ (Unlisted) mi?
-        else {
-            if (doUnlisted === 'like') {
-                action = 'like';
-                reason = "Unlisted Channel -> Action: LIKE ALL";
-            } else if (doUnlisted === 'dislike') {
-                action = 'dislike';
-                reason = "Unlisted Channel -> Action: DISLIKE ALL";
-            } else {
-                reason = "Unlisted Channel -> Action: NONE";
-            }
-        }
-
-        if (action) {
+        if (action && action !== 'none') {
             debugLog(`[ACTION] Decided to ${action.toUpperCase()} (${reason}) - Channel: ${data.channelName}`);
             const success = attemptAction(action, data.channelName);
 
@@ -313,13 +302,39 @@ function updateIconState() {
     const data = getVideoData();
     if (!data.channelName) return;
 
-    chrome.storage.sync.get(['whitelist', 'blacklist'], (res) => {
-        const whitelist = res.whitelist || [];
-        const blacklist = res.blacklist || [];
+    const keys = [
+        'whitelist', 'blacklist',
+        'actionWhitelist',
+        'actionBlacklist',
+        'actionUnlisted',
+        'enableLike', 'enableDislike',
+        'showNeutralBadge',
+        'enableExtension'
+    ];
 
-        let status = "inactive";
-        if (checkIsListed(whitelist, data.channelName)) status = "active";
-        else if (checkIsListed(blacklist, data.channelName)) status = "blacklisted";
+    chrome.storage.sync.get(keys, (settings) => {
+        // Eğer eklenti kapalıysa
+        if (settings.enableExtension === false) {
+            chrome.runtime.sendMessage({ action: "updateIcon", status: "disabled" });
+            return;
+        }
+
+        const result = resolveActionForChannel(data.channelName, settings);
+
+        // Icon durumunu belirle
+        let status = "none";
+        if (result.action === 'like') {
+            status = 'like';
+        } else if (result.action === 'dislike') {
+            status = 'dislike';
+        } else if (result.action === 'none') {
+            // Neutral mode kontrolü
+            if (settings.showNeutralBadge) {
+                status = 'neutral';
+            } else {
+                status = 'none'; // Badge temizlenir
+            }
+        }
 
         chrome.runtime.sendMessage({ action: "updateIcon", status: status });
     });
@@ -366,7 +381,7 @@ function logActivity(action, data, videoId, reason) {
             reason: reason
         };
         logs.unshift(newLog);
-        if (logs.length > 10) logs = logs.slice(0, 10);
+        if (logs.length > 10) logs = logs.slice(10);
         chrome.storage.sync.set({ activityLogs: logs });
     });
 }
