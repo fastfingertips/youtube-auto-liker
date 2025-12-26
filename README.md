@@ -1,6 +1,18 @@
 # YouTube Auto Like
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/store/promo_marquee_dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/store/promo_marquee_light.png">
+  <img alt="YouTube Auto Like" src="docs/store/promo_marquee_light.png">
+</picture>
+
 Automatic like and channel management extension for YouTube. Improve your viewing experience by automating interactions with your favorite channels.
+
+## Download
+
+- **Chrome Web Store**: Coming Soon
+- **[GitHub Releases](https://github.com/fastfingertips/youtube-auto-liker/releases)**: Download the latest `.zip` file (see [Installation](#installation) below)
+- **[Website](https://fastfingertips.github.io/youtube-auto-liker/)**: Visit our documentation site
 
 ## Screenshots
 
@@ -62,6 +74,10 @@ You can also set when this happens - right away, after watching some percentage 
 ### Activity Tab
 - View recent auto-like/dislike activity
 - Click on entries to open the video
+
+## Privacy
+
+This extension does not collect any personal data. All data is stored locally on your device. See our [Privacy Policy](https://fastfingertips.github.io/youtube-auto-liker/privacy.html) for details.
 
 ## License
 
