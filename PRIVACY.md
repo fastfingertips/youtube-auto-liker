@@ -42,10 +42,16 @@ The extension requires the following permissions:
 
 | Permission | Purpose |
 |------------|---------|
-| `storage` | To save your preferences and channel lists locally |
-| `activeTab` | To detect the current YouTube channel and interact with like/dislike buttons |
-| `scripting` | To run the content script on YouTube pages |
-| `host_permissions (youtube.com)` | To access YouTube pages for functionality |
+| `storage` | To save your preferences, whitelist/blacklist channels, and activity logs locally on your device |
+| `activeTab` | To detect the current YouTube channel and send messages to the content script for like/dislike actions |
+| `host_permissions (youtube.com)` | To run the content script on YouTube pages and interact with video elements |
+
+### Why These Permissions?
+
+- **storage**: Essential for saving your settings between browser sessions. All data stays on your device.
+- **activeTab**: Allows the extension popup to communicate with the active YouTube tab to add channels to lists.
+- **host_permissions**: Required for the content script to run on YouTube and detect videos/channels.
+
 
 ## Data Security
 

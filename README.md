@@ -75,6 +75,18 @@ You can also set when this happens - right away, after watching some percentage 
 - View recent auto-like/dislike activity
 - Click on entries to open the video
 
+## Permissions
+
+This extension uses minimal permissions required for functionality:
+
+| Permission | Why It's Needed |
+|------------|-----------------|
+| `storage` | Save your whitelist, blacklist, settings, and activity logs locally |
+| `activeTab` | Detect and interact with the current YouTube channel from the popup |
+| `youtube.com` | Run the content script to detect videos and click like/dislike buttons |
+
+**No data is ever sent to external servers.** All information stays on your device.
+
 ## Privacy
 
 This extension does not collect any personal data. All data is stored locally on your device. See our [Privacy Policy](https://fastfingertips.github.io/youtube-auto-liker/privacy.html) for details.
