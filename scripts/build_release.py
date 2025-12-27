@@ -212,6 +212,16 @@ class ReleaseBuilder:
         filename = f'{self.manifest.slug}-v{self.manifest.version}{suffix}.zip'
         filepath = os.path.join(self.output_dir, filename)
         
+        # Try to remove existing file if it exists
+        if os.path.exists(filepath):
+            try:
+                os.remove(filepath)
+            except PermissionError:
+                print(f"\n  Error: Cannot overwrite {filename}")
+                print("  The file may be open in another program.")
+                print("  Close the file and try again.\n")
+                raise SystemExit(1)
+        
         with zipfile.ZipFile(filepath, 'w', zipfile.ZIP_DEFLATED) as zipf:
             for item in files:
                 source = os.path.join(self.project_root, item)
