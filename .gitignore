@@ -17,6 +17,14 @@ node_modules/
 *.crx
 *.pem
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Build Output
+releases/
+
 # Misc
 *.bak
 *.tmp
