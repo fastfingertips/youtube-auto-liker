@@ -6,25 +6,26 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Dependencies
-node_modules/
-
 # Logs
 *.log
 
-# Chrome Extension Build
+# Chrome Extension# Build outputs
 *.zip
 *.crx
 *.pem
+releases/
 
 # Python
 __pycache__/
 *.pyc
 *.pyo
 
+# Node.js
+node_modules/
+package-lock.json
+
 # Build Output
 releases/
 
 # Misc
 *.bak
-*.tmp
