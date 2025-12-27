@@ -22,11 +22,11 @@
     </div>
 
     <div class="tabs">
-        <button class="tab-btn active" id="btn-settings">SETTINGS</button>
-        <button class="tab-btn" id="btn-whitelist">WHITELIST</button>
-        <button class="tab-btn" id="btn-blacklist">BLACKLIST</button>
-        <button class="tab-btn" id="btn-activity">ACTIVITY</button>
-        <button class="tab-btn" id="btn-about">ABOUT</button>
+        <button class="tab-btn active" id="btn-settings" title="Configure extension behavior">SETTINGS</button>
+        <button class="tab-btn" id="btn-whitelist" title="Channels to auto-like">WHITELIST</button>
+        <button class="tab-btn" id="btn-blacklist" title="Channels to auto-dislike">BLACKLIST</button>
+        <button class="tab-btn" id="btn-activity" title="Recent auto-like history">ACTIVITY</button>
+        <button class="tab-btn" id="btn-about" title="About this extension">ABOUT</button>
     </div>
 
     <div id="statusMsg"></div>
@@ -39,12 +39,12 @@
 
         <!-- WHITELIST & BLACKLIST - Compact row with counts -->
         <div class="list-actions-row">
-            <label class="list-action-item">
+            <label class="list-action-item" title="Auto-like videos from whitelisted channels">
                 <input type="checkbox" id="checkLikeWhitelist">
                 <span class="list-action-label">Whitelist → Like</span>
                 <span class="list-count" id="whitelistCount">0</span>
             </label>
-            <label class="list-action-item">
+            <label class="list-action-item" title="Auto-dislike videos from blacklisted channels">
                 <input type="checkbox" id="checkDislikeBlacklist">
                 <span class="list-action-label">Blacklist → Dislike</span>
                 <span class="list-count" id="blacklistCount">0</span>
@@ -56,7 +56,7 @@
             <label for="selectUnlisted" class="text-sub">
                 <strong>Unlisted Channels</strong> (Not in any list):
             </label>
-            <select id="selectUnlisted">
+            <select id="selectUnlisted" title="Action for channels not in whitelist or blacklist">
                 <option value="none">Do Nothing (Neutral)</option>
                 <option value="like">Like Everything</option>
                 <option value="dislike">Dislike Everything</option>
@@ -66,19 +66,19 @@
         <!-- TIMING -->
         <div class="section-title">TIMING</div>
 
-        <div class="option-row">
+        <div class="option-row" title="Trigger action immediately when video starts">
             <input type="radio" name="trigger" id="radioInstant" value="instant">
             <label for="radioInstant">Instant (Start)</label>
         </div>
 
-        <div class="option-row">
+        <div class="option-row" title="Trigger action after watching a percentage of the video">
             <input type="radio" name="trigger" id="radioPercent" value="percent">
             <label for="radioPercent">At Percentage:</label>
             <input type="number" id="triggerPercent" min="1" max="99" value="50" class="w-45 ml-auto mr-5">
             <span class="text-sub">%</span>
         </div>
 
-        <div class="option-row">
+        <div class="option-row" title="Trigger action after a specific number of seconds">
             <input type="radio" name="trigger" id="radioTime" value="time">
             <label for="radioTime">Specific Second:</label>
             <input type="number" id="triggerSeconds" min="1" class="w-45 ml-auto mr-5">
