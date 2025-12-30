@@ -10,7 +10,7 @@ Automatic like and channel management extension for YouTube. Improve your viewin
 
 ## Download
 
-- **Chrome Web Store**: Coming Soon
+- **[Chrome Web Store](https://chromewebstore.google.com/detail/youtube-auto-like/nlpclmfebmnahbhffafphgnajkbkiaib)**: Install directly from the store
 - **[GitHub Releases](https://github.com/fastfingertips/youtube-auto-liker/releases)**: Download the latest `.zip` file (see [Installation](#installation) below)
 - **[Website](https://fastfingertips.github.io/youtube-auto-liker/)**: Visit our documentation site
 
