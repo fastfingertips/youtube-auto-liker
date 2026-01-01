@@ -71,7 +71,7 @@ function setupEventListeners() {
     if (UI.masterSwitch) {
         UI.masterSwitch.addEventListener('change', () => {
             const isEnabled = UI.masterSwitch.checked;
-            chrome.storage.sync.set({ enableExtension: isEnabled });
+            StorageUtils.toggleSetting('enableExtension', isEnabled);
             updateMasterUI(isEnabled);
             showStatus(isEnabled ? "Extension Enabled" : "Extension Disabled");
         });
@@ -186,11 +186,9 @@ function switchTab(tabName) {
 }
 
 function loadAllData() {
-    chrome.storage.sync.get(CONFIG.STORAGE_KEYS, (res) => {
-        if (chrome.runtime.lastError) return;
-
+    StorageUtils.getAllData().then(res => {
         // Master switch
-        const isEnabled = res.enableExtension ?? true;
+        const isEnabled = res.enableExtension ?? CONFIG.DEFAULTS.enableExtension;
         UI.masterSwitch.checked = isEnabled;
         updateMasterUI(isEnabled);
 
@@ -251,8 +249,6 @@ function updateMasterUI(isEnabled) {
 }
 
 function saveSettings() {
-    if (!chrome?.storage?.sync) return;
-
     let triggerType = 'instant';
     if (UI.settings.radioPercent?.checked) triggerType = 'percent';
     if (UI.settings.radioTime?.checked) triggerType = 'time';
@@ -266,11 +262,13 @@ function saveSettings() {
         showNeutralBadge: UI.settings.checkShowNeutral ? UI.settings.checkShowNeutral.checked : false,
         enableDebug: UI.settings.checkDebug ? UI.settings.checkDebug.checked : false,
         triggerType: triggerType,
-        triggerSeconds: UI.settings.inputSeconds ? (Number.parseInt(UI.settings.inputSeconds.value, 10) || 10) : 10,
-        triggerPercent: UI.settings.inputPercent ? (Number.parseInt(UI.settings.inputPercent.value, 10) || 50) : 50
+        triggerSeconds: UI.settings.inputSeconds ? (Number.parseInt(UI.settings.inputSeconds.value, 10) || CONFIG.DEFAULTS.triggerSeconds) : CONFIG.DEFAULTS.triggerSeconds,
+        triggerPercent: UI.settings.inputPercent ? (Number.parseInt(UI.settings.inputPercent.value, 10) || CONFIG.DEFAULTS.triggerPercent) : CONFIG.DEFAULTS.triggerPercent
     };
 
-    chrome.storage.sync.set(settings, () => showStatus("Saved."));
+    StorageUtils.saveSettings(settings)
+        .then(() => showStatus("Saved."))
+        .catch(err => showStatus("Error saving.", true));
 }
 
 function handleAutoAdd(targetList) {
@@ -296,48 +294,23 @@ function handleAutoAdd(targetList) {
     });
 }
 
-function addChannel(name, url, targetListKey) {
-    chrome.storage.sync.get(['whitelist', 'blacklist'], (res) => {
-        const list = res[targetListKey] || [];
-        const otherListKey = targetListKey === 'whitelist' ? 'blacklist' : 'whitelist';
-        const otherList = res[otherListKey] || [];
+async function addChannel(name, url, targetListKey) {
+    const result = await StorageUtils.addChannel(name, url, targetListKey);
 
-        if (list.some(i => i.name === name)) {
-            showStatus(`Already in ${targetListKey}!`, true);
-            return;
-        }
-
-        let newOtherList = otherList;
-        let moved = false;
-        if (otherList.some(i => i.name === name)) {
-            newOtherList = otherList.filter(i => i.name !== name);
-            moved = true;
-        }
-
-        list.push({ name: name, url: url });
-
-        const updateData = {};
-        updateData[targetListKey] = list;
-        updateData[otherListKey] = newOtherList;
-
-        chrome.storage.sync.set(updateData, () => {
-            renderList(list, targetListKey);
-            renderList(newOtherList, otherListKey);
-            showStatus(moved ? `Moved to ${targetListKey}` : `Added to ${targetListKey}`);
-        });
-    });
+    if (result.success) {
+        // Refresh UI
+        const res = await StorageUtils.getAllData();
+        renderList(res.whitelist || [], 'whitelist');
+        renderList(res.blacklist || [], 'blacklist');
+        showStatus(result.message);
+    } else {
+        showStatus(result.message, true);
+    }
 }
 
-function removeChannel(nameToDelete, listKey) {
-    chrome.storage.sync.get([listKey], (res) => {
-        let list = res[listKey] || [];
-        list = list.filter(item => item.name !== nameToDelete);
-
-        const update = {};
-        update[listKey] = list;
-
-        chrome.storage.sync.set(update, () => renderList(list, listKey));
-    });
+async function removeChannel(nameToDelete, listKey) {
+    const updatedList = await StorageUtils.removeChannel(nameToDelete, listKey);
+    renderList(updatedList, listKey);
 }
 
 function renderList(list, listKey) {
