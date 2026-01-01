@@ -1,0 +1,199 @@
+/* 
+ * Shared Components
+ * Reusable UI components for popup and options
+ */
+
+/* ============================================
+   BUTTONS - Shared Styles
+   ============================================ */
+
+/* Button Group */
+.btn-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Base Button */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* Button Variants */
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.btn-outline:hover {
+    background: var(--hover-bg);
+    opacity: 1;
+}
+
+.btn-success {
+    background: var(--success-color);
+    color: var(--btn-text);
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: var(--btn-text);
+}
+
+/* Full width button */
+.btn-block {
+    width: 100%;
+    flex: 1;
+}
+
+/* Label as button */
+label.btn {
+    margin: 0;
+}
+
+/* Hidden file input */
+input[type="file"] {
+    display: none;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+
+.card {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--sub-text-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ============================================
+   STATUS MESSAGES
+   ============================================ */
+
+.status-msg {
+    margin-top: 16px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    text-align: center;
+    display: none;
+}
+
+.status-msg.success {
+    display: block;
+    background: rgba(0, 200, 83, 0.1);
+    color: var(--success-color);
+}
+
+.status-msg.error {
+    display: block;
+    background: var(--danger-bg-light);
+    color: var(--danger-color);
+}
+
+/* ============================================
+   NOTE/INFO BOX
+   ============================================ */
+
+.note {
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--hover-bg);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--sub-text-color);
+    line-height: 1.5;
+}
+
+.note strong {
+    color: var(--text-color);
+}
+
+/* ============================================
+   SVG ICONS
+   ============================================ */
+
+svg {
+    flex-shrink: 0;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Margins */
+.mt-0 {
+    margin-top: 0;
+}
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
+.mr-5 {
+    margin-right: 5px;
+}
+
+/* Sizing */
+.w-45 {
+    width: 45px;
+}
+
+/* Text */
+.text-sub {
+    font-size: 12px;
+    color: var(--sub-text-color);
+}
+
+/* Flexbox */
+.flex-col-start {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Accessibility - Screen Reader Only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
