@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-01-01
+
+### Added
+- Activity history toggle to enable/disable logging in Settings
+- Firefox extension support with dedicated import workaround page
+- Status banners indicating when auto-actions or history logging are disabled
+- Info text clarifying the 50-item local history limit
+
+### Changed
+- Major UI refinement: Expanded popup width and optimized layout for better readability
+- Rebalanced "Unlisted Channels" configuration with prioritized dropdown width
+- Reorganized "Data & Advanced" section into individual toggle groups
+- Refactored core logic into `StorageUtils` and `BackupUtils`
+- Centralized application constants and limits in `config.js`
+
+### Fixed
+- Synced count badges and status messages across all popup tabs
+- Improved "Clear Activity" flow with confirmation and status feedback
+
 ## [1.2.1] - 2025-12-27
 
 ### Fixed

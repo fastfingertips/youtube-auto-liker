@@ -54,15 +54,31 @@
         </div>
 
         <!-- 3. UNLISTED ACTION (Dropdown) -->
-        <div class="option-row flex-col-start mt-10">
-            <label for="selectUnlisted" class="text-sub">
-                <strong>Unlisted Channels</strong> (Not in any list):
-            </label>
-            <select id="selectUnlisted" title="Action for channels not in whitelist or blacklist">
-                <option value="none">Do Nothing (Neutral)</option>
-                <option value="like">Like Everything</option>
-                <option value="dislike">Dislike Everything</option>
-            </select>
+        <div class="mt-15" style="display: flex; align-items: flex-end; gap: 8px; width: 100%;">
+            <div style="flex: 4; min-width: 0;">
+                <label for="selectUnlisted" class="text-sub"
+                    style="display: block; margin-bottom: 5px; font-weight: 500;">
+                    <strong>Unlisted Channels</strong>:
+                </label>
+                <select id="selectUnlisted" title="Action for channels not in whitelist or blacklist"
+                    style="margin-top: 0; width: 100%; box-sizing: border-box; height: 32px; display: block;">
+                    <option value="none">Do Nothing (Neutral)</option>
+                    <option value="like">Like Everything</option>
+                    <option value="dislike">Dislike Everything</option>
+                </select>
+            </div>
+
+            <!-- Label and Badge Toggle (Smaller) -->
+            <div style="flex: 1; min-width: 0;">
+                <label class="btn-toggle-sm" title="Show neutral badge" style="width: 100%;">
+                    <input type="checkbox" id="checkShowNeutral">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="8" y1="12" x2="16" y2="12" />
+                    </svg>
+                    <span>Badge</span>
+                </label>
+            </div>
         </div>
 
         <!-- TIMING -->
@@ -84,7 +100,7 @@
             <input type="radio" name="trigger" id="radioTime" value="time">
             <label for="radioTime">Specific Second:</label>
             <input type="number" id="triggerSeconds" min="1" class="w-45 ml-auto mr-5">
-            <span class="text-sub">s</span>
+            <span class="text-sub">seconds</span>
         </div>
 
         <div class="option-row sub-option">
@@ -106,7 +122,6 @@
                     </svg>
                     Export
                 </button>
-                <!-- Chrome: Direct import button -->
                 <label for="fileInput" id="btnImport" class="btn-sm" title="Import settings and data"
                     style="cursor: pointer; display: none;">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -117,7 +132,6 @@
                     Import
                     <input type="file" id="fileInput" style="display: none;" accept=".json">
                 </label>
-                <!-- Firefox: Settings button (due to popup file input limitation) -->
                 <button id="btnOpenSettings" class="btn-sm" title="Firefox limitation: Import opens in a new tab"
                     style="display: none;">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -125,18 +139,11 @@
                         <polyline points="17 8 12 3 7 8" />
                         <line x1="12" y1="3" x2="12" y2="15" />
                     </svg>
-                    Import ❋
+                    Import
                 </button>
             </div>
+
             <div class="btn-group-toggle">
-                <label class="btn-toggle" title="Show neutral badge for unlisted channels">
-                    <input type="checkbox" id="checkShowNeutral">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="8" y1="12" x2="16" y2="12" />
-                    </svg>
-                    Neutral
-                </label>
                 <label class="btn-toggle" title="Enable console logs (F12)">
                     <input type="checkbox" id="checkDebug">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -144,6 +151,13 @@
                         <line x1="12" y1="19" x2="20" y2="19" />
                     </svg>
                     Debug
+                </label>
+                <label class="btn-toggle" title="Remembers only your last 50 activities locally">
+                    <input type="checkbox" id="checkHistory">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    History
                 </label>
             </div>
         </div>
@@ -210,6 +224,14 @@
 
     <!-- ACTIVITY TAB -->
     <div id="content-activity" class="tab-content">
+        <div id="historyDisabledBanner" class="status-banner status-warning" style="display: none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <span>Activity history is <strong>disabled</strong> in Settings</span>
+        </div>
         <div class="tab-header">
             <div class="tab-header-info">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -224,6 +246,9 @@
                 Clear
             </button>
         </div>
+        <p class="info-text" style="font-size: 11px; margin: 0 0 10px 0; text-align: left; opacity: 0.8;">
+            * Only the last 50 activities are stored locally in your browser.
+        </p>
         <div class="list-container">
             <ul id="activityLogs" class="logs-list">
                 <li style="font-style:italic; justify-content:center; opacity:0.5;">No activity yet...</li>

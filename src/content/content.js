@@ -349,7 +349,9 @@ function checkIsListed(list, name) {
 }
 
 function logActivity(action, data, videoId, reason) {
-    chrome.storage.sync.get(['activityLogs'], (res) => {
+    chrome.storage.sync.get(['activityLogs', 'enableHistory'], (res) => {
+        if (res.enableHistory === false) return;
+
         let logs = res.activityLogs || [];
         const newLog = {
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -360,7 +362,7 @@ function logActivity(action, data, videoId, reason) {
             reason: reason
         };
         logs.unshift(newLog);
-        if (logs.length > 10) logs = logs.slice(10);
+        if (logs.length > 50) logs = logs.slice(0, 50); // Increased log limit a bit
         chrome.storage.sync.set({ activityLogs: logs });
     });
 }

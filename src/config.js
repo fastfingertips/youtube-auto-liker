@@ -23,7 +23,8 @@ const CONFIG = {
         enableHumanize: false,
         showNeutralBadge: true,
         enableDebug: false,
-        enableExtension: true
+        enableExtension: true,
+        enableHistory: true
     },
 
     // ─────────────────────────────────────────
@@ -109,6 +110,7 @@ const CONFIG = {
         'actionUnlisted',
         'showNeutralBadge',
         'enableDebug',
+        'enableHistory',
         'activityLogs'
     ],
 

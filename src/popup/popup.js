@@ -31,7 +31,8 @@ function initApp() {
             inputSeconds: document.getElementById('triggerSeconds'),
             checkHumanize: document.getElementById('checkHumanize'),
             checkShowNeutral: document.getElementById('checkShowNeutral'),
-            checkDebug: document.getElementById('checkDebug')
+            checkDebug: document.getElementById('checkDebug'),
+            checkHistory: document.getElementById('checkHistory')
         },
         lists: {
             addWhitelistBtn: document.getElementById('addWhitelistBtn'),
@@ -49,7 +50,8 @@ function initApp() {
         },
         logs: {
             ul: document.getElementById('activityLogs'),
-            btnClear: document.getElementById('btnClearLogs')
+            btnClear: document.getElementById('btnClearLogs'),
+            historyDisabledBanner: document.getElementById('historyDisabledBanner')
         },
         status: document.getElementById('statusMsg')
     };
@@ -90,7 +92,8 @@ function setupEventListeners() {
         UI.settings.radioInstant, UI.settings.radioPercent,
         UI.settings.radioTime, UI.settings.checkHumanize,
         UI.settings.checkShowNeutral,
-        UI.settings.checkDebug
+        UI.settings.checkDebug,
+        UI.settings.checkHistory
     ];
     settingInputs.forEach(el => {
         if (el) el.addEventListener('change', saveSettings);
@@ -165,10 +168,11 @@ function updateHumanizeState() {
     }
 }
 
-// Update status banners in whitelist/blacklist tabs
+// Update status banners in whitelist/blacklist/activity tabs
 function updateStatusBanners() {
     const whitelistEnabled = UI.settings.checkLikeWhitelist?.checked;
     const blacklistEnabled = UI.settings.checkDislikeBlacklist?.checked;
+    const historyEnabled = UI.settings.checkHistory?.checked;
 
     if (UI.lists.whitelistDisabledBanner) {
         UI.lists.whitelistDisabledBanner.style.display = whitelistEnabled ? 'none' : 'flex';
@@ -176,6 +180,10 @@ function updateStatusBanners() {
 
     if (UI.lists.blacklistDisabledBanner) {
         UI.lists.blacklistDisabledBanner.style.display = blacklistEnabled ? 'none' : 'flex';
+    }
+
+    if (UI.logs.historyDisabledBanner) {
+        UI.logs.historyDisabledBanner.style.display = historyEnabled ? 'none' : 'flex';
     }
 }
 
@@ -204,7 +212,7 @@ function loadAllData() {
         // Lists and Logs
         renderList(res.whitelist || [], 'whitelist');
         renderList(res.blacklist || [], 'blacklist');
-        renderLogs(res.activityLogs || []);
+        renderLogs(res.activityLogs || [], res.enableHistory ?? CONFIG.DEFAULTS.enableHistory);
 
         updateHumanizeState();
         updateStatusBanners();
@@ -219,6 +227,7 @@ function mapStorageToSettings(res) {
         humanize: res.enableHumanize ?? false,
         neutral: res.showNeutralBadge ?? false,
         debug: res.enableDebug ?? false,
+        history: res.enableHistory ?? true,
         trigger: {
             type: res.triggerType || 'instant',
             seconds: res.triggerSeconds || 10,
@@ -235,6 +244,7 @@ function applySettingsToUI(s) {
     if (UI.settings.checkHumanize) UI.settings.checkHumanize.checked = s.humanize;
     if (UI.settings.checkShowNeutral) UI.settings.checkShowNeutral.checked = s.neutral;
     if (UI.settings.checkDebug) UI.settings.checkDebug.checked = s.debug;
+    if (UI.settings.checkHistory) UI.settings.checkHistory.checked = s.history;
 
     if (UI.settings.radioPercent) UI.settings.radioPercent.checked = (s.trigger.type === 'percent');
     if (UI.settings.radioTime) UI.settings.radioTime.checked = (s.trigger.type === 'time');
@@ -266,13 +276,21 @@ function saveSettings() {
         enableHumanize: UI.settings.checkHumanize ? UI.settings.checkHumanize.checked : false,
         showNeutralBadge: UI.settings.checkShowNeutral ? UI.settings.checkShowNeutral.checked : false,
         enableDebug: UI.settings.checkDebug ? UI.settings.checkDebug.checked : false,
+        enableHistory: UI.settings.checkHistory ? UI.settings.checkHistory.checked : true,
         triggerType: triggerType,
         triggerSeconds: UI.settings.inputSeconds ? (Number.parseInt(UI.settings.inputSeconds.value, 10) || CONFIG.DEFAULTS.triggerSeconds) : CONFIG.DEFAULTS.triggerSeconds,
         triggerPercent: UI.settings.inputPercent ? (Number.parseInt(UI.settings.inputPercent.value, 10) || CONFIG.DEFAULTS.triggerPercent) : CONFIG.DEFAULTS.triggerPercent
     };
 
     StorageUtils.saveSettings(settings)
-        .then(() => showStatus("Saved."))
+        .then(() => {
+            showStatus("Saved.");
+            updateStatusBanners();
+            // Re-render logs with current setting
+            chrome.storage.sync.get(['activityLogs'], res => {
+                renderLogs(res.activityLogs || [], settings.enableHistory);
+            });
+        })
         .catch(err => showStatus("Error saving.", true));
 }
 
@@ -379,14 +397,19 @@ function renderList(list, listKey) {
 async function handleClearLogs() {
     if (confirm("Clear all activity history?")) {
         await StorageUtils.clearLogs();
-        renderLogs([]);
+        const isHistoryEnabled = UI.settings.checkHistory ? UI.settings.checkHistory.checked : true;
+        renderLogs([], isHistoryEnabled);
         showStatus("Activity cleared.");
     }
 }
 
-function renderLogs(logs) {
+function renderLogs(logs, isHistoryEnabled = true) {
     if (!UI.logs.ul) return;
     UI.logs.ul.innerHTML = '';
+
+    if (!isHistoryEnabled) {
+        return; // Banner handles this now
+    }
 
     if (!logs || logs.length === 0) {
         const emptyLi = document.createElement('li');
@@ -402,7 +425,7 @@ function renderLogs(logs) {
         return;
     }
 
-    logs.slice(0, 20).forEach(log => {
+    logs.slice(0, 50).forEach(log => {
         const li = document.createElement('li');
         li.className = 'log-item';
 

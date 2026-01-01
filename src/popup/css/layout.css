@@ -46,7 +46,7 @@ h2 {
     display: flex;
     align-items: center;
     gap: 5px;
-    padding: 5px 10px;
+    padding: 5px 12px;
     background: var(--bg-color);
     border: none;
     border-right: 1px solid var(--border-color);
@@ -55,7 +55,6 @@ h2 {
     font-weight: 500;
     color: var(--text-color);
     transition: background 0.15s;
-    width: auto;
 }
 
 .btn-group .btn-sm:last-child {
@@ -113,12 +112,61 @@ h2 {
 
 .btn-group-toggle .btn-toggle:hover {
     background: var(--hover-bg);
-    color: var(--text-color);
 }
 
 .btn-group-toggle .btn-toggle:has(input:checked) {
     background: var(--btn-bg);
     color: var(--btn-text);
+}
+
+.btn-group-toggle .btn-toggle:has(input:checked) svg {
+    stroke: var(--badge-text);
+}
+
+/* Standalone Small Toggle (e.g. next to select) */
+.btn-toggle-sm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 31px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--sub-text-color);
+    gap: 3px;
+    min-width: 50px;
+    /* Strong minimum but still narrow */
+}
+
+.btn-toggle-sm:hover {
+    background: var(--hover-bg);
+}
+
+.btn-toggle-sm input {
+    display: none;
+}
+
+.btn-toggle-sm svg {
+    stroke: var(--sub-text-color);
+    opacity: 0.7;
+}
+
+.btn-toggle-sm:has(input:checked) {
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    border-color: var(--btn-bg);
+}
+
+.btn-toggle-sm:has(input:checked) svg {
+    stroke: var(--btn-text);
+    opacity: 1;
 }
 
 /* ============================================
