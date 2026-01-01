@@ -505,52 +505,26 @@ function createSvgIcon(pathD, size = 12, strokeWidth = 2) {
     return svg;
 }
 
-function handleExport() {
-    chrome.storage.sync.get(null, (res) => {
-        const backupData = {
-            timestamp: new Date().toISOString(),
-            data: res
-        };
-
-        const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-
-        a.href = url;
-        a.download = `auto_like_backup_${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
+async function handleExport() {
+    try {
+        await BackupUtils.exportBackup();
         showStatus("Backup exported.");
-    });
+    } catch {
+        showStatus("Export failed.", true);
+    }
 }
 
-function handleImportFile(event) {
+async function handleImportFile(event) {
     const file = event.target.files[0];
     if (!file) return;
 
-    file.text().then(text => {
-        try {
-            const json = JSON.parse(text);
-            if (json.data && typeof json.data === 'object') {
-                chrome.storage.sync.set(json.data, () => {
-                    if (chrome.runtime.lastError) {
-                        showStatus("Import failed.", true);
-                        return;
-                    }
-                    loadAllData();
-                    showStatus("Imported successfully!");
-                });
-            } else {
-                showStatus("Invalid format.", true);
-            }
-        } catch {
-            showStatus("Read error.", true);
-        }
-    }).catch(() => {
-        showStatus("Read error.", true);
-    });
+    try {
+        await BackupUtils.importBackup(file);
+        loadAllData();
+        showStatus("Imported successfully!");
+    } catch {
+        showStatus("Import failed.", true);
+    }
     event.target.value = '';
 }
 

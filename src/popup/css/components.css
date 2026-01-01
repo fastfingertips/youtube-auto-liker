@@ -1,8 +1,12 @@
 /* ============================================
-   MODERN STYLE COMPONENTS
+   POPUP COMPONENTS
+   Popup-specific UI components
    ============================================ */
 
-/* TOGGLE SWITCH */
+/* ============================================
+   1. TOGGLE SWITCH
+   ============================================ */
+
 .switch {
     position: relative;
     display: inline-block;
@@ -52,7 +56,7 @@ input:checked+.slider:before {
 }
 
 /* ============================================
-   FORM CONTROLS - Modern Style
+   2. FORM CONTROLS
    ============================================ */
 
 /* Option Row Container */
@@ -93,7 +97,7 @@ label strong {
     font-weight: 600;
 }
 
-/* Checkbox & Radio - Modern Style */
+/* Checkbox & Radio */
 input[type="checkbox"],
 input[type="radio"] {
     appearance: none;
@@ -149,7 +153,7 @@ input[type="radio"]:checked::after {
     border-radius: 50%;
 }
 
-/* Number Input - Modern Style */
+/* Number Input */
 input[type="number"] {
     background: var(--bg-color);
     color: var(--text-color);
@@ -167,7 +171,7 @@ input[type="number"]:focus {
     box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
-/* Select Dropdown - Modern Style */
+/* Select Dropdown */
 select {
     width: 100%;
     padding: 6px 10px;
@@ -192,7 +196,7 @@ select:focus {
 }
 
 /* ============================================
-   BUTTONS - Modern Style
+   3. BUTTONS
    ============================================ */
 
 /* Base Button */
@@ -220,7 +224,7 @@ button:hover {
     border-color: var(--sub-text-color);
 }
 
-/* Primary Button */
+/* Button Variants */
 .btn-primary {
     background: var(--btn-bg);
     color: var(--btn-text);
@@ -232,7 +236,6 @@ button:hover {
     border-color: var(--btn-bg);
 }
 
-/* Secondary Button */
 .btn-secondary {
     background: transparent;
     color: var(--text-color);
@@ -241,6 +244,37 @@ button:hover {
 
 .btn-secondary:hover {
     background: var(--hover-bg);
+}
+
+.btn-success {
+    background: var(--success-color);
+    border-color: var(--success-color);
+    color: var(--btn-text);
+}
+
+.btn-success:hover {
+    opacity: 0.9;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    border-color: var(--danger-color);
+    color: var(--btn-text);
+}
+
+.btn-danger:hover {
+    opacity: 0.9;
+}
+
+.danger-btn {
+    color: var(--danger-color);
+    background: var(--danger-bg-light);
+    border-color: transparent;
+}
+
+.danger-btn:hover {
+    background: var(--danger-bg-hover);
+    border-color: var(--danger-color);
 }
 
 /* Add Button (Full Width) */
@@ -258,89 +292,7 @@ button:hover {
     background: var(--border-color);
 }
 
-/* Danger Button */
-.danger-btn {
-    color: var(--danger-color);
-    background: var(--danger-bg-light);
-    border-color: transparent;
-}
-
-.danger-btn:hover {
-    background: var(--danger-bg-hover);
-    border-color: var(--danger-color);
-}
-
-/* Success Button */
-.btn-success {
-    background: var(--success-color);
-    border-color: var(--success-color);
-    color: var(--btn-text);
-}
-
-.btn-success:hover {
-    opacity: 0.9;
-    background: var(--success-color);
-    border-color: var(--success-color);
-}
-
-/* Danger Button Small */
-.btn-danger {
-    background: var(--danger-color);
-    border-color: var(--danger-color);
-    color: var(--btn-text);
-}
-
-.btn-danger:hover {
-    opacity: 0.9;
-    background: var(--danger-color);
-    border-color: var(--danger-color);
-}
-
-/* ============================================
-   TAB HEADER
-   ============================================ */
-
-.tab-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 12px;
-    background: var(--hover-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    margin-bottom: 10px;
-}
-
-.tab-header-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--sub-text-color);
-}
-
-.tab-header-info strong {
-    color: var(--text-color);
-}
-
-/* Tab Info Bar - Compact description */
-.tab-info-bar {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    font-size: 11px;
-    color: var(--sub-text-color);
-    background: var(--hover-bg);
-    border-radius: 4px;
-    margin-bottom: 8px;
-}
-
-.tab-info-bar strong {
-    color: var(--text-color);
-}
-
-/* Full Width Add Button */
+/* Dashed Add Button */
 .btn-add-full {
     display: flex;
     align-items: center;
@@ -366,7 +318,50 @@ button:hover {
 }
 
 /* ============================================
-   STATUS BANNERS - Modern Style
+   4. TAB HEADER & INFO BARS
+   ============================================ */
+
+.tab-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: var(--hover-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.tab-header-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--sub-text-color);
+}
+
+.tab-header-info strong {
+    color: var(--text-color);
+}
+
+.tab-info-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    font-size: 11px;
+    color: var(--sub-text-color);
+    background: var(--hover-bg);
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.tab-info-bar strong {
+    color: var(--text-color);
+}
+
+/* ============================================
+   5. STATUS BANNERS
    ============================================ */
 
 .status-banner {
@@ -387,7 +382,6 @@ button:hover {
     font-weight: 600;
 }
 
-/* Warning - Yellow/Orange */
 .status-warning {
     background: #fff8c5;
     border: 1px solid #d4a72c;
@@ -403,7 +397,7 @@ button:hover {
 }
 
 /* ============================================
-   LIST ACTIONS ROW - Compact Whitelist/Blacklist
+   6. LIST ACTIONS
    ============================================ */
 
 .list-actions-row {

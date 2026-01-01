@@ -1,4 +1,12 @@
-/* HEADER */
+/* ============================================
+   POPUP LAYOUT
+   Page structure and layout components
+   ============================================ */
+
+/* ============================================
+   1. HEADER
+   ============================================ */
+
 .header-container {
     display: flex;
     justify-content: space-between;
@@ -15,7 +23,10 @@ h2 {
     color: var(--text-color);
 }
 
-/* QUICK SETTINGS TOOLBAR - Modern Style */
+/* ============================================
+   2. QUICK SETTINGS TOOLBAR
+   ============================================ */
+
 .quick-settings-row {
     display: flex;
     align-items: center;
@@ -23,6 +34,7 @@ h2 {
     margin-bottom: 12px;
 }
 
+/* Button Group (Compact) */
 .btn-group {
     display: inline-flex;
     border: 1px solid var(--border-color);
@@ -109,7 +121,10 @@ h2 {
     color: var(--btn-text);
 }
 
-/* TABS - Modern Style Compact */
+/* ============================================
+   3. TABS
+   ============================================ */
+
 .tabs {
     display: flex;
     margin-bottom: 12px;
@@ -155,7 +170,10 @@ h2 {
     border-radius: 2px 2px 0 0;
 }
 
-/* CONTENT AREAS & SECTIONS */
+/* ============================================
+   4. CONTENT AREAS
+   ============================================ */
+
 .tab-content {
     display: none;
     animation: fadeIn 0.2s ease-in-out;
@@ -190,7 +208,10 @@ h2 {
     margin-top: 0;
 }
 
-/* BACKUP SECTION */
+/* ============================================
+   5. BACKUP SECTION
+   ============================================ */
+
 .backup-container {
     margin-top: 20px;
     padding-top: 15px;
@@ -202,7 +223,10 @@ h2 {
     gap: 8px;
 }
 
-/* STATUS & INFO */
+/* ============================================
+   6. STATUS & INFO
+   ============================================ */
+
 #statusMsg {
     text-align: center;
     margin-bottom: 10px;
@@ -218,7 +242,10 @@ h2 {
     text-align: center;
 }
 
-/* --- ABOUT SECTION STYLES --- */
+/* ============================================
+   7. ABOUT SECTION
+   ============================================ */
+
 .about-container {
     display: flex;
     flex-direction: column;
@@ -232,7 +259,6 @@ h2 {
     height: 64px;
     margin-bottom: 12px;
     border-radius: 12px;
-    /* Hafif yuvarlak köşe */
 }
 
 .about-container h3 {
@@ -295,50 +321,4 @@ h2 {
 
 .about-footer p {
     margin: 2px 0;
-}
-
-/* ============================================
-   UTILITY CLASSES
-   ============================================ */
-
-.mt-0 {
-    margin-top: 0;
-}
-
-.mt-10 {
-    margin-top: 10px;
-}
-
-.ml-auto {
-    margin-left: auto;
-}
-
-.mr-5 {
-    margin-right: 5px;
-}
-
-.w-45 {
-    width: 45px;
-}
-
-.text-sub {
-    font-size: 12px;
-    color: var(--sub-text-color);
-}
-
-.flex-col-start {
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
 }
