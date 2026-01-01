@@ -10,8 +10,8 @@ Automatic like and channel management extension for YouTube. Improve your viewin
 
 ## Download
 
-- **[Chrome Web Store](https://chromewebstore.google.com/detail/youtube-auto-like/nlpclmfebmnahbhffafphgnajkbkiaib)**: Install directly from the store
-- **[GitHub Releases](https://github.com/fastfingertips/youtube-auto-liker/releases)**: Download the latest `.zip` file (see [Installation](#installation) below)
+- **[Chrome Web Store](https://chromewebstore.google.com/detail/youtube-auto-like/nlpclmfebmnahbhffafphgnajkbkiaib)**: Install directly for Chrome/Edge
+- **[GitHub Releases](https://github.com/fastfingertips/youtube-auto-liker/releases)**: Download for Chrome or Firefox (Firefox Store coming soon)
 - **[Website](https://fastfingertips.github.io/youtube-auto-liker/)**: Visit our documentation site
 
 ## Screenshots
@@ -28,15 +28,22 @@ Automatic like and channel management extension for YouTube. Improve your viewin
 
 When you open a YouTube video, the extension checks if the channel is in your whitelist or blacklist. If it's in the whitelist, it clicks the like button for you. If it's in the blacklist, it clicks dislike. Simple as that.
 
-You can also set when this happens - right away, after watching some percentage of the video, or after a specific number of seconds. The "Humanize" option adds a random delay so it looks more natural.
+You can also set when this happens - right away, after watching some percentage of the video, or after a specific number of seconds. The "Humanize" option adds a random delay so it looks more natural. All actions are performed locally on your browser.
 
 ## Installation
 
-1. Download or clone this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable "Developer mode" (toggle in the top right corner)
-4. Click "Load unpacked"
-5. Select the downloaded folder of this project
+### Chrome / Edge
+1. Download the `youtube-auto-like-vX.X.X-chrome.zip` from [Releases](https://github.com/fastfingertips/youtube-auto-liker/releases)
+2. Extract the ZIP file
+3. Open browser and navigate to `chrome://extensions/`
+4. Enable **"Developer mode"** (top right)
+5. Click **"Load unpacked"** and select the extracted `src` folder (or the root folder containing common files)
+
+### Firefox
+1. Download the `youtube-auto-like-vX.X.X-firefox.zip` from [Releases](https://github.com/fastfingertips/youtube-auto-liker/releases)
+2. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
+3. Click **"Load Temporary Add-on..."**
+4. Select the `manifest.json` from the extracted folder
 
 ## Features
 
@@ -47,6 +54,7 @@ You can also set when this happens - right away, after watching some percentage 
   - Do Nothing (Default)
   - Like Everything
   - Dislike Everything
+  - **Neutral Badge**: Only show the list status icon without taking any action
 
 ### Flexible Timing
 - **Instant**: Trigger the action immediately when the video starts
@@ -55,8 +63,10 @@ You can also set when this happens - right away, after watching some percentage 
 - **Humanize**: Adds random delay to mimic natural human interaction (only with Specific Second)
 
 ### Activity & Management
-- **Activity Log**: View a history of recent actions with channel info
+- **Activity Log**: View a history of recent actions with channel info (last 50 items)
+- **History Toggle**: Enable or disable activity logging entirely
 - **Import/Export**: Backup your settings and channel lists to JSON
+- **Cross-Browser**: Optimized for both Chrome and Firefox
 
 ## Usage
 
