@@ -1,0 +1,17 @@
+meta:
+  last_updated: "2026-01-01"
+  version: 1.3.2
+
+pricing:
+  type: "Free"
+  in_app_purchases: false
+
+visibility:
+  type: "Public"
+  description: "Visible to everyone in selected countries"
+
+distribution:
+  regions_type: "All regions"
+  included_countries:
+    - "All"
+  notes: "Includes all 150+ supported countries and regions by Chrome Web Store."

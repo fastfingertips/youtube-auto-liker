@@ -1,0 +1,37 @@
+meta:
+  last_updated: "2026-01-01"
+  compliance_version: 1.3.2
+
+single_purpose:
+  description: "Automatically like or dislike YouTube videos based on user-defined channel lists (whitelist/blacklist). The extension helps users manage their YouTube interactions by automating the like/dislike process for specific channels."
+
+permissions:
+  storage:
+    justification: "To save user preferences, whitelist/blacklist channel data, and activity logs locally in Chrome storage."
+  activeTab:
+    justification: "To detect the current YouTube video's channel name and interact with the like/dislike buttons on the active tab."
+  host_permissions:
+    justification: "Required to access youtube.com pages to detect channel information and interact with like/dislike buttons."
+
+remote_code:
+  used: false
+  justification: ""
+
+data_usage:
+  personally_identifiable_info: false
+  health_info: false
+  financial_payment_info: false
+  authentication_info: false
+  personal_communications: false
+  location: false
+  web_history: false
+  user_activity: false
+  website_content: false
+
+certifications:
+  not_sold_to_third_parties: true
+  not_used_for_unrelated_purposes: true
+  not_used_for_creditworthiness: true
+
+privacy_policy:
+  url: "https://fastfingertips.github.io/youtube-interaction-manager/privacy.html"

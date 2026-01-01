@@ -1,0 +1,65 @@
+meta:
+  version: 1.3.2
+  last_updated: "2026-01-01"
+
+listing:
+  name: "YouTube Interaction Manager"
+  summary: "Smart interaction manager for YouTube. Auto-like whitelist, auto-dislike blacklist, and detailed activity logging."
+  description: |
+    NOTE: We have rebranded! "YouTube Auto Like" is now "YouTube Interaction Manager".
+
+    YouTube Interaction Manager - Smart Channel Assistant
+
+    Manage your YouTube interactions automatically based on your channel preferences. Whitelist your favorites, blacklist others, and customize exactly when and how interactions happen.
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    HOW IT WORKS
+
+    When you open a YouTube video, the extension checks your list settings.
+    - Whitelist: Auto-LIKES videos from channels you support.
+    - Blacklist: Auto-DISLIKES videos from channels you want to avoid.
+    - Neutral: Shows a status badge but takes no action (great for monitoring).
+
+    You have full control over timing: triggering actions instantly, after a percentage of the video is watched, or after a specific delay. The "Humanize" mode adds randomization so interactions feel natural.
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    FEATURES
+
+    ★ Smart Interaction Rules
+    - Whitelist: Automatically LIKE videos from creators you trust
+    - Blacklist: Automatically DISLIKE videos from channels you avoid
+    - Unlisted Channels: Define default behavior (Like All, Dislike All, or do nothing)
+
+    ★ Flexible Timing & Control
+    - Instant: Trigger action immediately when video starts
+    - At Percentage: Trigger after watching X% of the video
+    - Specific Second: Trigger after X seconds
+    - Humanize: Adds random delays to feel like a real user
+
+    ★ Activity & Privacy
+    - History Log: Keep a local record of all automated actions
+    - Privacy Mode: Disable history logging entirely if preferred
+    - 100% Local: No tracking, no external servers, no data collection
+
+    ★ Management
+    - Import/Export: Backup and restore your channel lists and settings
+    - Cross-Browser: Optimized for both Chrome and Firefox
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    Open source and free forever.
+    GitHub: https://github.com/fastfingertips/youtube-interaction-manager
+
+categorization:
+  category: "Entertainment"
+  language: "en"
+  mature_content: false
+
+urls:
+  privacy_policy: "https://fastfingertips.github.io/youtube-interaction-manager/privacy.html"
+  homepage: "https://github.com/fastfingertips/youtube-interaction-manager"
+  support: "https://github.com/fastfingertips/youtube-interaction-manager/issues"
+
+
