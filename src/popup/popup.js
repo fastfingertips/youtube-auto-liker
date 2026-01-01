@@ -48,7 +48,8 @@ function initApp() {
             fileInput: document.getElementById('fileInput')
         },
         logs: {
-            ul: document.getElementById('activityLogs')
+            ul: document.getElementById('activityLogs'),
+            btnClear: document.getElementById('btnClearLogs')
         },
         status: document.getElementById('statusMsg')
     };
@@ -136,6 +137,10 @@ function setupEventListeners() {
         if (UI.lists.fileInput) {
             UI.lists.fileInput.addEventListener('change', handleImportFile);
         }
+    }
+
+    if (UI.logs.btnClear) {
+        UI.logs.btnClear.addEventListener('click', handleClearLogs);
     }
 }
 
@@ -369,6 +374,14 @@ function renderList(list, listKey) {
         li.appendChild(btn);
         ul.appendChild(li);
     });
+}
+
+async function handleClearLogs() {
+    if (confirm("Clear all activity history?")) {
+        await StorageUtils.clearLogs();
+        renderLogs([]);
+        showStatus("Activity cleared.");
+    }
 }
 
 function renderLogs(logs) {

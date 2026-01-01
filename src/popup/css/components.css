@@ -277,6 +277,13 @@ button:hover {
     border-color: var(--danger-color);
 }
 
+.btn-sm {
+    padding: 3px 8px;
+    font-size: 11px;
+    line-height: normal;
+    border-radius: 4px;
+}
+
 /* Add Button (Full Width) */
 .add-btn {
     width: 100%;
