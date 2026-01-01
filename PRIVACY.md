@@ -7,7 +7,7 @@
 # Privacy Policy for YouTube Auto Like
 
 **Created: December 26, 2025**
-**Last updated: December 26, 2025**
+**Last updated: January 1, 2026**
 
 ## Overview
 
@@ -26,7 +26,7 @@ The extension stores the following information locally on your device:
 - **Whitelist**: Channel names you choose to auto-like
 - **Blacklist**: Channel names you choose to auto-dislike
 - **Settings**: Your preferences (timing, humanize option, etc.)
-- **Activity Log**: Recent actions performed by the extension
+- **Activity Log**: Recent actions performed by the extension (Can be disabled in Settings)
 
 ## Data Sharing
 
