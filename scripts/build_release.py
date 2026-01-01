@@ -26,9 +26,8 @@ OUTPUTS:
         Contains extension files plus documentation.
 
 USAGE:
-    python scripts/build_release.py              # Build Chrome packages
-    python scripts/build_release.py --firefox    # Build Firefox package
-    python scripts/build_release.py --all        # Build all platforms
+    python scripts/build_release.py              # Build all packages (Chrome + Firefox)
+    python scripts/build_release.py --no-firefox # Build only Chrome packages
     python scripts/build_release.py --bump patch # Bump 1.2.1 -> 1.2.2
 
 NOTES:
@@ -403,10 +402,9 @@ def main():
         help='Include Firefox package in build'
     )
     parser.add_argument(
-        '--all',
+        '--no-firefox',
         action='store_true',
-        dest='all_platforms',
-        help='Build packages for all platforms (Chrome + Firefox)'
+        help='Exclude Firefox package from build'
     )
     parser.add_argument(
         '--no-open',
@@ -423,8 +421,8 @@ def main():
         old_ver, new_ver = builder.manifest.bump_version(args.bump)
         print(f"Version bumped: {old_ver} -> {new_ver}\n")
     
-    # Determine if Firefox should be included
-    include_firefox = args.firefox or args.all_platforms
+    # Determine if Firefox should be included (default to True)
+    include_firefox = not args.no_firefox
     
     # Build packages
     result = builder.build_all(include_firefox=include_firefox)
