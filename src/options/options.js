@@ -13,7 +13,7 @@ function showStatus(message, isError = false) {
     setTimeout(() => {
         statusEl.className = '';
         statusEl.textContent = '';
-    }, 3000);
+    }, CONFIG.TIMING.notificationDuration);
 }
 
 async function handleExport() {

@@ -30,7 +30,7 @@ const BackupUtils = {
         const a = document.createElement('a');
 
         a.href = url;
-        a.download = filename || `auto_like_backup_${new Date().toISOString().split('T')[0]}.json`;
+        a.download = filename || `${CONFIG.BACKUP_PREFIX}_${new Date().toISOString().split('T')[0]}.json`;
         document.body.appendChild(a);
         a.click();
         a.remove();

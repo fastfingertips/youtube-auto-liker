@@ -186,14 +186,7 @@ function switchTab(tabName) {
 }
 
 function loadAllData() {
-    const keys = [
-        'enableExtension', 'whitelist', 'blacklist',
-        'enableLike', 'enableDislike', 'actionWhitelist', 'actionBlacklist', 'actionUnlisted',
-        'triggerType', 'triggerSeconds', 'triggerPercent',
-        'enableHumanize', 'showNeutralBadge', 'enableDebug', 'activityLogs'
-    ];
-
-    chrome.storage.sync.get(keys, (res) => {
+    chrome.storage.sync.get(CONFIG.STORAGE_KEYS, (res) => {
         if (chrome.runtime.lastError) return;
 
         // Master switch
@@ -531,8 +524,8 @@ async function handleImportFile(event) {
 function showStatus(msg, isError = false) {
     if (!UI.status) return;
     UI.status.textContent = msg;
-    UI.status.style.color = isError ? '#ff5252' : 'var(--success-color)';
+    UI.status.style.color = isError ? CONFIG.COLORS.statusError : 'var(--success-color)';
     setTimeout(() => {
         if (UI.status) UI.status.textContent = '';
-    }, 2500);
+    }, CONFIG.TIMING.statusMessage);
 }

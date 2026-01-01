@@ -35,6 +35,7 @@
                 "https://*.youtube.com/*"
             ],
             "js": [
+                "src/config.js",
                 "src/content/content.js"
             ],
             "run_at": "document_end"

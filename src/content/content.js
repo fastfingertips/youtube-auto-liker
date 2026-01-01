@@ -1,29 +1,5 @@
-// --- CONFIG ---
-const SELECTORS = {
-    channelName: [
-        '#owner #channel-name a',
-        '.ytd-channel-name a',
-        '#upload-info #channel-name a',
-        'ytd-video-owner-renderer #channel-name a',
-        '#text.ytd-channel-name',
-        'ytd-channel-name a'
-    ],
-    videoTitle: [
-        '#title > h1 > yt-formatted-string',
-        'h1.ytd-watch-metadata',
-        'h1.title.style-scope.ytd-video-primary-info-renderer'
-    ],
-    likeBtn: [
-        'like-button-view-model button',
-        '#top-level-buttons-computed > ytd-toggle-button-renderer:first-child a',
-        '#segmented-like-button button'
-    ],
-    dislikeBtn: [
-        'dislike-button-view-model button',
-        '#top-level-buttons-computed > ytd-toggle-button-renderer:nth-child(2) a',
-        '#segmented-dislike-button button'
-    ]
-};
+// Uses CONFIG from src/config.js (injected by manifest)
+// CONFIG.SELECTORS, CONFIG.DEFAULTS, CONFIG.TIMING, etc.
 
 // --- STATE ---
 let state = {
@@ -45,10 +21,9 @@ function debugLog(message, data = null, allowSpam = false) {
 
     state.lastLogMsg = message;
     const prefix = "%c[AutoLike TRACE]";
-    const styles = "background: #000; color: #00ff00; font-family: monospace; font-size: 10px; padding: 2px 4px; border-radius: 2px;";
 
-    if (data) console.log(prefix, styles, message, data);
-    else console.log(prefix, styles, message);
+    if (data) console.log(prefix, CONFIG.LOG_STYLE, message, data);
+    else console.log(prefix, CONFIG.LOG_STYLE, message);
 }
 
 // --- INIT ---
@@ -105,7 +80,7 @@ function handleNavigation() {
 // --- CORE LOOPS ---
 function startObserver() {
     if (state.checkInterval) clearInterval(state.checkInterval);
-    state.checkInterval = setInterval(checkVideoStatus, 1000);
+    state.checkInterval = setInterval(checkVideoStatus, CONFIG.TIMING.checkInterval);
 }
 
 function checkVideoStatus() {
@@ -247,7 +222,7 @@ function processVideo(videoId) {
             if (success) {
                 logActivity(action.toUpperCase(), data, videoId, reason);
                 state.processedVideoId = videoId;
-                scheduleVerification(action, data.channelName, [2000, 5000]);
+                scheduleVerification(action, data.channelName, CONFIG.TIMING.verificationDelays);
             }
         } else {
             debugLog(`[SKIP] No action taken. Reason: ${reason} - Channel: ${data.channelName}`);
@@ -257,7 +232,7 @@ function processVideo(videoId) {
 }
 
 function attemptAction(action, channelName) {
-    const btnSelectors = action === 'like' ? SELECTORS.likeBtn : SELECTORS.dislikeBtn;
+    const btnSelectors = action === 'like' ? CONFIG.SELECTORS.likeBtn : CONFIG.SELECTORS.dislikeBtn;
     let btn = null;
 
     for (let sel of btnSelectors) {
@@ -347,7 +322,7 @@ function getVideoData() {
     let channelName = null;
     let channelUrl = null;
 
-    for (let sel of SELECTORS.channelName) {
+    for (let sel of CONFIG.SELECTORS.channelName) {
         const el = document.querySelector(sel);
         if (el) {
             channelName = el.textContent.trim();
@@ -357,7 +332,7 @@ function getVideoData() {
     }
 
     let videoTitle = null;
-    for (let sel of SELECTORS.videoTitle) {
+    for (let sel of CONFIG.SELECTORS.videoTitle) {
         const el = document.querySelector(sel);
         if (el) {
             videoTitle = el.textContent.trim();
@@ -402,7 +377,7 @@ function showNotification(text, isSuccess) {
         position: 'fixed',
         bottom: '24px',
         left: '24px',
-        backgroundColor: isSuccess ? '#0f9d58' : '#db4437',
+        backgroundColor: isSuccess ? CONFIG.COLORS.notifySuccess : CONFIG.COLORS.notifyError,
         color: '#fff',
         padding: '12px 20px',
         borderRadius: '8px',
@@ -413,7 +388,7 @@ function showNotification(text, isSuccess) {
         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
         opacity: '0',
         transform: 'translateY(20px)',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+        transition: `all ${CONFIG.TIMING.notificationFadeOut}ms cubic-bezier(0.4, 0, 0.2, 1)`
     });
 
     div.innerText = text;
@@ -427,6 +402,6 @@ function showNotification(text, isSuccess) {
     setTimeout(() => {
         div.style.opacity = '0';
         div.style.transform = 'translateY(10px)';
-        setTimeout(() => div.remove(), 300);
-    }, 3000);
+        setTimeout(() => div.remove(), CONFIG.TIMING.notificationFadeOut);
+    }, CONFIG.TIMING.notificationDuration);
 }
