@@ -1,42 +1,48 @@
 """
-Release Builder for Chrome Extensions
-======================================
+Release Builder for Browser Extensions
+=======================================
 
 This script automates the creation of release packages for distribution.
 
 PURPOSE:
     Generate ZIP archives ready for upload to:
     1. Chrome Web Store (Developer Console)
-    2. GitHub Releases
+    2. Firefox Add-ons (AMO)
+    3. GitHub Releases
 
 OUTPUTS:
-    Creates two ZIP files in the 'releases' folder:
+    Creates ZIP files in the 'releases' folder:
     
     - {name}-v{version}-store.zip
         Minimal package for Chrome Web Store submission.
         Contains only essential extension files.
+    
+    - {name}-v{version}-firefox.zip
+        Package for Firefox Add-ons (AMO) submission.
+        Uses background.scripts instead of service_worker.
         
     - {name}-v{version}.zip
         Full package for GitHub Release.
         Contains extension files plus documentation.
 
 USAGE:
-    python scripts/build_release.py              # Build current version
+    python scripts/build_release.py              # Build Chrome packages
+    python scripts/build_release.py --firefox    # Build Firefox package
+    python scripts/build_release.py --all        # Build all platforms
     python scripts/build_release.py --bump patch # Bump 1.2.1 -> 1.2.2
-    python scripts/build_release.py --bump minor # Bump 1.2.1 -> 1.3.0
-    python scripts/build_release.py --bump major # Bump 1.2.1 -> 2.0.0
 
 NOTES:
     - All metadata is read from manifest.json
+    - Firefox manifest is auto-generated from Chrome manifest
     - Extension name is converted to slug format (lowercase, hyphenated)
     - The 'releases' folder will be created if it doesn't exist
-    - The folder will open automatically after build completes
 
 WORKFLOW:
     1. Run with --bump to increment version
     2. Commit and push changes
     3. Upload -store.zip to Chrome Developer Console
-    4. Upload .zip to GitHub Release
+    4. Upload -firefox.zip to Firefox Add-ons (AMO)
+    5. Upload .zip to GitHub Release
 """
 
 import os
@@ -44,6 +50,9 @@ import json
 import zipfile
 import re
 import argparse
+import tempfile
+import shutil
+import copy
 
 
 class Manifest:
@@ -95,6 +104,36 @@ class Manifest:
     def get(self, key, default=None):
         """Get any manifest property."""
         return self._data.get(key, default)
+    
+    def to_firefox_manifest(self):
+        """
+        Convert Chrome manifest to Firefox-compatible format.
+        
+        Changes:
+        - Replace service_worker with background.scripts
+        - Add browser_specific_settings for Firefox
+        
+        Returns:
+            dict: Firefox-compatible manifest data
+        """
+        firefox_data = copy.deepcopy(self._data)
+        
+        # Convert service_worker to background scripts
+        if 'background' in firefox_data:
+            bg = firefox_data['background']
+            if 'service_worker' in bg:
+                script_path = bg.pop('service_worker')
+                bg['scripts'] = [script_path]
+        
+        # Add Firefox-specific settings
+        firefox_data['browser_specific_settings'] = {
+            'gecko': {
+                'id': 'youtube-auto-like@fastfingertips',
+                'strict_min_version': '109.0'
+            }
+        }
+        
+        return firefox_data
     
     def bump_version(self, bump_type='patch'):
         """
@@ -250,11 +289,60 @@ class ReleaseBuilder:
         docs_files = self._get_existing_files(self.DOCS_FILES)
         return self._create_package(store_files + docs_files)
     
-    def build_all(self):
+    def build_firefox_package(self):
+        """Create package for Firefox Add-ons (AMO)."""
+        
+        # Create temp directory for Firefox build
+        temp_dir = tempfile.mkdtemp()
+        
+        try:
+            # Copy store files to temp directory
+            files = self._get_existing_files(self.STORE_FILES)
+            for item in files:
+                source = os.path.join(self.project_root, item)
+                dest = os.path.join(temp_dir, item)
+                if os.path.isdir(source):
+                    shutil.copytree(source, dest)
+                else:
+                    shutil.copy2(source, dest)
+            
+            # Generate Firefox-compatible manifest
+            firefox_manifest = self.manifest.to_firefox_manifest()
+            manifest_path = os.path.join(temp_dir, 'manifest.json')
+            with open(manifest_path, 'w', encoding='utf-8') as f:
+                json.dump(firefox_manifest, f, indent=4)
+            
+            # Create ZIP package
+            filename = f'{self.manifest.slug}-v{self.manifest.version}-firefox.zip'
+            filepath = os.path.join(self.output_dir, filename)
+            
+            # Remove existing file if present
+            if os.path.exists(filepath):
+                try:
+                    os.remove(filepath)
+                except PermissionError:
+                    print(f"\n  Error: Cannot overwrite {filename}")
+                    print("  The file may be open in another program.")
+                    print("  Close the file and try again.\n")
+                    raise SystemExit(1)
+            
+            with zipfile.ZipFile(filepath, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                for root, dirs, files_list in os.walk(temp_dir):
+                    for file in files_list:
+                        file_path = os.path.join(root, file)
+                        arc_path = os.path.relpath(file_path, temp_dir)
+                        zipf.write(file_path, arc_path)
+            
+            return filepath
+        finally:
+            # Cleanup temp directory
+            shutil.rmtree(temp_dir, ignore_errors=True)
+    
+    def build_all(self, include_firefox=False):
         """Build all release packages and return results."""
         os.makedirs(self.output_dir, exist_ok=True)
         
-        return {
+        result = {
             'name': self.manifest.name,
             'slug': self.manifest.slug,
             'version': self.manifest.version,
@@ -263,6 +351,11 @@ class ReleaseBuilder:
             'github': self.build_github_package(),
             'output_dir': self.output_dir,
         }
+        
+        if include_firefox:
+            result['firefox'] = self.build_firefox_package()
+        
+        return result
     
     @staticmethod
     def format_size(bytes_size):
@@ -285,6 +378,9 @@ class ReleaseBuilder:
         print("\n  Packages:")
         print(f"    Chrome Store: {os.path.basename(result['store'])}")
         print(f"                  {self.format_size(os.path.getsize(result['store']))}")
+        if 'firefox' in result:
+            print(f"    Firefox:      {os.path.basename(result['firefox'])}")
+            print(f"                  {self.format_size(os.path.getsize(result['firefox']))}")
         print(f"    GitHub:       {os.path.basename(result['github'])}")
         print(f"                  {self.format_size(os.path.getsize(result['github']))}")
         print(f"\n  Output: {result['output_dir']}")
@@ -294,12 +390,23 @@ class ReleaseBuilder:
 def main():
     """Entry point for the release builder."""
     parser = argparse.ArgumentParser(
-        description='Build release packages for Chrome extension'
+        description='Build release packages for browser extensions'
     )
     parser.add_argument(
         '--bump',
         choices=['major', 'minor', 'patch'],
         help='Bump version before building (major, minor, or patch)'
+    )
+    parser.add_argument(
+        '--firefox',
+        action='store_true',
+        help='Include Firefox package in build'
+    )
+    parser.add_argument(
+        '--all',
+        action='store_true',
+        dest='all_platforms',
+        help='Build packages for all platforms (Chrome + Firefox)'
     )
     parser.add_argument(
         '--no-open',
@@ -316,8 +423,11 @@ def main():
         old_ver, new_ver = builder.manifest.bump_version(args.bump)
         print(f"Version bumped: {old_ver} -> {new_ver}\n")
     
+    # Determine if Firefox should be included
+    include_firefox = args.firefox or args.all_platforms
+    
     # Build packages
-    result = builder.build_all()
+    result = builder.build_all(include_firefox=include_firefox)
     builder.print_summary(result)
     
     # Open output folder (Windows)
